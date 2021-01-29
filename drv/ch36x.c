@@ -908,6 +908,8 @@ static int ch36x_pci_probe(struct pci_dev *pdev,
 	if (retval)
 		goto disable;
 
+	mutex_init(&ch36x_dev->io_mutex);
+
 	retval = ch36x_map_device(pdev, ch36x_dev);
 	if (retval)
 		goto free_regions;
