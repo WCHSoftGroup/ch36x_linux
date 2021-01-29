@@ -252,7 +252,7 @@ extern int ch36x_read_io_byte(int fd, unsigned long ioaddr, uint8_t *obyte);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_read_io_word(int fd, void *ioaddr, uint16_t *oword);
+extern int ch36x_read_io_word(int fd, unsigned long ioaddr, uint16_t *oword);
 
 /**
  * ch36x_read_io_dword - read one dword from io space
@@ -262,7 +262,7 @@ extern int ch36x_read_io_word(int fd, void *ioaddr, uint16_t *oword);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_read_io_dword(int fd, void *ioaddr, uint32_t *odword);
+extern int ch36x_read_io_dword(int fd, unsigned long ioaddr, uint32_t *odword);
 
 /**
  * ch36x_write_io_byte - write one byte to io space
@@ -282,7 +282,7 @@ extern int ch36x_write_io_byte(int fd, unsigned long ioaddr, uint8_t ibyte);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_write_io_word(int fd, void *ioaddr, uint16_t iword);
+extern int ch36x_write_io_word(int fd, unsigned long ioaddr, uint16_t iword);
 
 /**
  * ch36x_write_io_dword - write one dword to io space
@@ -292,7 +292,7 @@ extern int ch36x_write_io_word(int fd, void *ioaddr, uint16_t iword);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_write_io_dword(int fd, void *ioaddr, uint32_t idword);
+extern int ch36x_write_io_dword(int fd, unsigned long ioaddr, uint32_t idword);
 
 /**
  * ch36x_read_mem_byte - read one byte from memory space
@@ -312,7 +312,7 @@ extern int ch36x_read_mem_byte(int fd, unsigned long memaddr, uint8_t *obyte);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_read_mem_word(int fd, void *memaddr, uint16_t *oword);
+extern int ch36x_read_mem_word(int fd, unsigned long memaddr, uint16_t *oword);
 
 /**
  * ch36x_read_mem_dword - read one dword from memory space
@@ -322,7 +322,7 @@ extern int ch36x_read_mem_word(int fd, void *memaddr, uint16_t *oword);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_read_mem_dword(int fd, void *memaddr, uint32_t *odword);
+extern int ch36x_read_mem_dword(int fd, unsigned long memaddr, uint32_t *odword);
 
 /**
  * ch36x_write_mem_byte - write one byte to mem space
@@ -342,7 +342,7 @@ extern int ch36x_write_mem_byte(int fd, unsigned long memaddr, uint8_t ibyte);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_write_mem_word(int fd, void *memaddr, uint16_t iword);
+extern int ch36x_write_mem_word(int fd, unsigned long memaddr, uint16_t iword);
 
 /**
  * ch36x_write_mem_dword - write one dword to mem space
@@ -352,7 +352,7 @@ extern int ch36x_write_mem_word(int fd, void *memaddr, uint16_t iword);
  *
  * The function return 0 if success, others if fail.
  */
-extern int ch36x_write_mem_dword(int fd, void *memaddr, uint32_t idword);
+extern int ch36x_write_mem_dword(int fd, unsigned long memaddr, uint32_t idword);
 
 /**
  * ch36x_read_mem_block - read bytes from mem space
