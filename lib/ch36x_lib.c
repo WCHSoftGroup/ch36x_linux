@@ -8,19 +8,12 @@
  *
  * Cross-compile with cross-gcc -I /path/to/cross-kernel/include
  *
-<<<<<<< HEAD
- * Version: V1.1
-=======
  * Version: V1.11
->>>>>>> develop
  * 
  * Update Log:
  * V1.0 - initial version
  * V1.1 - modified APIs related to interrupt
-<<<<<<< HEAD
-=======
  * V1.11 - added APIs related to SPI transfer
->>>>>>> develop
  *
  */
  
@@ -361,11 +354,7 @@ int ch36x_write_io_dword(int fd, unsigned long ioaddr, uint32_t idword)
 {
 	struct {
 		unsigned long ioaddr;
-<<<<<<< HEAD
-		uint8_t idword;
-=======
 		uint32_t idword;
->>>>>>> develop
 	} ch36x_write_io_t;
 	
 	ch36x_write_io_t.ioaddr = ioaddr;
@@ -589,8 +578,6 @@ void ch36x_set_int_routine(int fd, void *isr_handler)
 		signal(SIGIO, isr_handler); 
 	}
 }
-<<<<<<< HEAD
-=======
 
 /**
  * ch36x_set_stream - set spi mode
@@ -636,4 +623,3 @@ int ch36x_stream_spi(int fd, uint8_t *ibuffer, unsigned long ilen, uint8_t *obuf
 
 	return ioctl(fd, CH36x_STREAM_SPI, (unsigned long)&ch36x_stream_spi_t);
 }
->>>>>>> develop

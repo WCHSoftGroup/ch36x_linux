@@ -8,19 +8,12 @@
  *
  * Cross-compile with cross-gcc -I /path/to/cross-kernel/include
  *
-<<<<<<< HEAD
- * Version: V1.1
-=======
  * Version: V1.11
->>>>>>> develop
  * 
  * Update Log:
  * V1.0 - initial version
  * V1.1 - called new APIs within ch36x_lib
-<<<<<<< HEAD
-=======
  * V1.11 - called SPI APIs within ch36x_lib
->>>>>>> develop
  *
  */
  
@@ -30,11 +23,7 @@
 #include <errno.h>   
 #include <string.h>
 #include <sys/types.h> 
-<<<<<<< HEAD
-#include "ch36x_lib.h"
-=======
 #include "../lib/ch36x_lib.h"
->>>>>>> develop
 
 static const char *device = "/dev/ch36xpci0";
 
@@ -196,8 +185,6 @@ static void ch36x_demo_isr_disable(int fd)
 	ch36x_set_int_routine(fd, NULL);
 }
 
-<<<<<<< HEAD
-=======
 static void ch36x_demo_spi_operate(int fd)
 {
 	/* bit0 of mode on SPI Freq, 0->31.3MHz, 1->15.6MHz */
@@ -234,7 +221,6 @@ static void ch36x_demo_spi_operate(int fd)
 	printf("\n");
 }
 
->>>>>>> develop
 int main(int argc, char *argv[])
 {
 	int fd;
@@ -286,11 +272,7 @@ int main(int argc, char *argv[])
 	while (1) {
 		printf("press c to operate config space, m to operate memory space, "
 				"i to operate io space, e to enable interrupt, "
-<<<<<<< HEAD
-				"d to disable interrpt, q for quit.\n");
-=======
 				"d to disable interrpt, s to operate spi, q for quit.\n");
->>>>>>> develop
 		scanf("%c", &c);
 		getchar();
 		if (c == 'q')
@@ -314,12 +296,9 @@ int main(int argc, char *argv[])
 		case 'd':
 			ch36x_demo_isr_disable(fd);
 			break;
-<<<<<<< HEAD
-=======
 		case 's':
 			ch36x_demo_spi_operate(fd);
 			break;
->>>>>>> develop
 		default:
 			break;
 		}
@@ -334,8 +313,3 @@ int main(int argc, char *argv[])
 exit:
 	return ret;
 }
-<<<<<<< HEAD
-
-
-=======
->>>>>>> develop
