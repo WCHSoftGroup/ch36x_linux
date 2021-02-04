@@ -48,6 +48,7 @@ enum INTMODE {
 #define CH36x_ENABLE_INT				_IOW(IOCTL_MAGIC, 0x96, uint16_t)
 #define CH36x_DISABLE_INT				_IOW(IOCTL_MAGIC, 0x97, uint16_t)
 
+<<<<<<< HEAD
 /*  */
 #define CH36x_GET_CHIPTYPE				_IOR(IOCTL_MAGIC, 0x98, uint16_t)
 #define CH36x_GET_VERSION				_IOR(IOCTL_MAGIC, 0x99, uint16_t)
@@ -78,10 +79,44 @@ typedef	struct	_CH365_IO_REG {				// CH365芯片的I/O空间
 
 typedef	struct	_CH365_MEM_REG {			// CH365芯片的存储器空间
 	uint8_t			mCh365MemPort[0x8000];		// 0000H-7FFFH,共32768字节为标准的存储器单元
+=======
+/* other codes */
+#define CH36x_GET_CHIPTYPE				_IOR(IOCTL_MAGIC, 0x98, uint16_t)
+#define CH36x_GET_VERSION				_IOR(IOCTL_MAGIC, 0x99, uint16_t)
+#define CH36x_SET_STREAM				_IOW(IOCTL_MAGIC, 0x9a, uint16_t)
+#define CH36x_STREAM_SPI				_IOWR(IOCTL_MAGIC, 0x9b, uint16_t)
+
+typedef	struct	_CH365_IO_REG {				//CH365芯片的I/O空间
+	uint8_t mCh365IoPort[0xf0];				//00H-EFH,共240字节为标准的I/O端口
+	union {									//以字或者以字节为单位进行存取
+		uint16_t	mCh365MemAddr;			//F0H 存储器接口: A15-A0地址设定寄存器
+		struct {							//以字节为单位进行存取
+			uint8_t mCh365MemAddrL;			//F0H 存储器接口: A7-A0地址设定寄存器
+			uint8_t mCh365MemAddrH;			//F1H 存储器接口: A15-A8地址设定寄存器
+		};
+	};
+	uint8_t mCh365IoResv2;					//F2H
+	uint8_t mCh365MemData;					//F3H 存储器接口: 存储器数据存取寄存器
+	uint8_t mCh365I2cData;					//F4H I2C串行接口: I2C数据存取寄存器
+	uint8_t mCh365I2cCtrl;					//F5H I2C串行接口: I2C控制和状态寄存器
+	uint8_t mCh365I2cAddr;					//F6H I2C串行接口: I2C地址设定寄存器
+	uint8_t mCh365I2cDev;					//F7H I2C串行接口: I2C设备地址和命令寄存器
+	uint8_t mCh365IoCtrl;					//F8H 芯片控制寄存器,高5位只读
+	uint8_t mCh365IoBuf;					//F9H 本地数据输入缓存寄存器
+	uint8_t mCh365Speed;					//FAH 芯片速度控制寄存器
+	uint8_t mCh365IoResv3;					//FBH
+	uint8_t mCh365IoTime;					//FCH 硬件循环计数寄存器
+	uint8_t mCh365IoResv4[3];				//FDH
+} mCH365_IO_REG, *mPCH365_IO_REG;
+
+typedef	struct	_CH365_MEM_REG {			//CH365芯片的存储器空间
+	uint8_t mCh365MemPort[0x8000];			//0000H-7FFFH,共32768字节为标准的存储器单元
+>>>>>>> develop
 } mCH365_MEM_REG, *mPCH365_MEM_REG;
 
 
 typedef	struct	_CH367_IO_REG {	            //CH367芯片的I/O空间寄存器
+<<<<<<< HEAD
 	uint8_t mCH367IoPort[0xE8];                  //00H-E7H,共232字节为标准的I/O端口
 	uint8_t mCH367GPOR;	                        //E8H 通用输出寄存器
 	uint8_t mCH367GPVR;	                        //E9H 通用变量寄存器
@@ -121,6 +156,50 @@ typedef	struct	_CH368_MEM_REG {			// CH367芯片的存储器空间
 	uint8_t			mCH368MemPort[0x8000];		// 0000H-7FFFH,共32768字节为标准的存储器单元
 } mCH368_MEM_REG, *mPCH368_MEM_REG;
 
+=======
+	uint8_t mCH367IoPort[0xE8];             //00H-E7H,共232字节为标准的I/O端口
+	uint8_t mCH367GPOR;	                    //E8H 通用输出寄存器
+	uint8_t mCH367GPVR;	                    //E9H 通用变量寄存器
+	uint8_t mCH367GPIR;	                    //EAH 通用输入寄存器
+	uint8_t mCH367IntCtr;	                //EBH 中断控制寄存器
+	union {
+		uint8_t mCH367IoBuf8;               //ECH 8位被动并行接口数据缓冲区
+		uint32_t mCH367IoBuf32;				//ECH 32位被动并行接口数据缓冲区
+	};
+	union {
+		uint16_t mCH368MemAddr;             //F0H 存储器接口: A15-A0地址设定寄存器
+		struct {
+			uint8_t mCH368MemAddrL;         //F0H 存储器接口: A7-A0地址设定寄存器
+			union {
+				uint8_t mCH368MemAddrH;     //F1H 存储器接口: A15-A8地址设定寄存器
+				uint8_t mCH367GPOR2;        //F1H 通用输出寄存器2
+			};
+		} ASR;
+	};
+	uint8_t mCH367IORESV2;                  //F2H
+	uint8_t mCH368MemData;                  //F3H 存储器接口: 存储器数据存取寄存器
+	union {
+		uint8_t mCH367Data8Sta;				//F4H D7-D0端口状态寄存器
+		uint32_t mCH367SData32Sta;          //F4H D31-D0端口状态寄存器
+	};
+	uint8_t mCH367Status;                   //F8H 杂项控制和状态寄存器
+	uint8_t mCH367IO_RESV3;                 //F9H
+	uint8_t mCH367Speed;                    //FAH 读写速度控制寄存器
+	uint8_t mCH367PDataCtrl;                //FBH 被动并行接口控制寄存器
+	uint8_t mCH367IoTime;                   //FCH 硬件循环计数寄存器
+	uint8_t mCH367SPICtrl;                  //FDH SPI控制寄存器
+	uint8_t mCH367SPIData;                  //FEH SPI数据寄存器
+	uint8_t mCH367IO_RESV4;                 //FFH
+} mCH367_IO_REG, *mPCH367_IO_REG;
+
+typedef	struct _CH368_MEM_REG {				//CH367芯片的存储器空间
+	uint8_t mCH368MemPort[0x8000];			//0000H-7FFFH,共32768字节为标准的存储器单元
+} mCH368_MEM_REG, *mPCH368_MEM_REG;
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define	mMAX_BUFFER_LENGTH	MAX(sizeof(mCH367_IO_REG), sizeof(mCH368_MEM_REG))
+
+>>>>>>> develop
 /**
  * ch36x_open - open ch36x device
  * @devname: the device name to open
@@ -128,7 +207,11 @@ typedef	struct	_CH368_MEM_REG {			// CH367芯片的存储器空间
  * The function return the new file descriptor, or -1 if an error occurred
  */
 extern int ch36x_open(const char *devname);
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> develop
 /**
  * ch36x_close - close ch36x device
  * @fd: the device handle
@@ -182,7 +265,11 @@ extern int ch36x_get_memaddr(int fd, void *memaddr);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_config_byte(int fd, uint8_t offset, uint8_t *obyte);
+=======
+extern int ch36x_read_config_byte(int fd, uint8_t offset, uint8_t * obyte);
+>>>>>>> develop
 
 /**
  * ch36x_read_config_word - read one word from config space
@@ -192,7 +279,11 @@ extern int ch36x_read_config_byte(int fd, uint8_t offset, uint8_t *obyte);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_config_word(int fd, uint8_t offset, uint16_t *oword);
+=======
+extern int ch36x_read_config_word(int fd, uint8_t offset, uint16_t * oword);
+>>>>>>> develop
 
 /**
  * ch36x_read_config_dword - read one dword from config space
@@ -202,7 +293,11 @@ extern int ch36x_read_config_word(int fd, uint8_t offset, uint16_t *oword);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_config_dword(int fd, uint8_t offset, uint32_t *odword);
+=======
+extern int ch36x_read_config_dword(int fd, uint8_t offset, uint32_t * odword);
+>>>>>>> develop
 
 /**
  * ch36x_write_config_byte - write one byte to config space
@@ -242,7 +337,11 @@ extern int ch36x_write_config_dword(int fd, uint8_t offset, uint32_t idword);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_io_byte(int fd, unsigned long ioaddr, uint8_t *obyte);
+=======
+extern int ch36x_read_io_byte(int fd, unsigned long ioaddr, uint8_t * obyte);
+>>>>>>> develop
 
 /**
  * ch36x_read_io_word - read one byte from io word
@@ -252,7 +351,11 @@ extern int ch36x_read_io_byte(int fd, unsigned long ioaddr, uint8_t *obyte);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_io_word(int fd, unsigned long ioaddr, uint16_t *oword);
+=======
+extern int ch36x_read_io_word(int fd, unsigned long ioaddr, uint16_t * oword);
+>>>>>>> develop
 
 /**
  * ch36x_read_io_dword - read one dword from io space
@@ -262,7 +365,11 @@ extern int ch36x_read_io_word(int fd, unsigned long ioaddr, uint16_t *oword);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_io_dword(int fd, unsigned long ioaddr, uint32_t *odword);
+=======
+extern int ch36x_read_io_dword(int fd, unsigned long ioaddr, uint32_t * odword);
+>>>>>>> develop
 
 /**
  * ch36x_write_io_byte - write one byte to io space
@@ -302,7 +409,11 @@ extern int ch36x_write_io_dword(int fd, unsigned long ioaddr, uint32_t idword);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_mem_byte(int fd, unsigned long memaddr, uint8_t *obyte);
+=======
+extern int ch36x_read_mem_byte(int fd, unsigned long memaddr, uint8_t * obyte);
+>>>>>>> develop
 
 /**
  * ch36x_read_mem_word - read one word from memory space
@@ -312,7 +423,11 @@ extern int ch36x_read_mem_byte(int fd, unsigned long memaddr, uint8_t *obyte);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_mem_word(int fd, unsigned long memaddr, uint16_t *oword);
+=======
+extern int ch36x_read_mem_word(int fd, unsigned long memaddr, uint16_t * oword);
+>>>>>>> develop
 
 /**
  * ch36x_read_mem_dword - read one dword from memory space
@@ -322,7 +437,12 @@ extern int ch36x_read_mem_word(int fd, unsigned long memaddr, uint16_t *oword);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_mem_dword(int fd, unsigned long memaddr, uint32_t *odword);
+=======
+extern int ch36x_read_mem_dword(int fd, unsigned long memaddr,
+				uint32_t * odword);
+>>>>>>> develop
 
 /**
  * ch36x_write_mem_byte - write one byte to mem space
@@ -352,7 +472,12 @@ extern int ch36x_write_mem_word(int fd, unsigned long memaddr, uint16_t iword);
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_write_mem_dword(int fd, unsigned long memaddr, uint32_t idword);
+=======
+extern int ch36x_write_mem_dword(int fd, unsigned long memaddr,
+				 uint32_t idword);
+>>>>>>> develop
 
 /**
  * ch36x_read_mem_block - read bytes from mem space
@@ -363,7 +488,12 @@ extern int ch36x_write_mem_dword(int fd, unsigned long memaddr, uint32_t idword)
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_read_mem_block(int fd, unsigned long memaddr, uint8_t *obuffer, unsigned long len);
+=======
+extern int ch36x_read_mem_block(int fd, unsigned long memaddr,
+				uint8_t * obuffer, unsigned long len);
+>>>>>>> develop
 
 /**
  * ch36x_write_mem_block - write bytes to mem space
@@ -374,7 +504,12 @@ extern int ch36x_read_mem_block(int fd, unsigned long memaddr, uint8_t *obuffer,
  *
  * The function return 0 if success, others if fail.
  */
+<<<<<<< HEAD
 extern int ch36x_write_mem_block(int fd, unsigned long memaddr, uint8_t *ibuffer, unsigned long len);
+=======
+extern int ch36x_write_mem_block(int fd, unsigned long memaddr,
+				 uint8_t * ibuffer, unsigned long len);
+>>>>>>> develop
 
 /**
  * ch36x_enable_isr - enable ch36x interrupt
@@ -401,4 +536,30 @@ extern int ch36x_disable_isr(int fd);
  */
 extern void ch36x_set_int_routine(int fd, void *isr_handler);
 
+<<<<<<< HEAD
 #endif
+=======
+/**
+ * ch36x_set_stream - set spi mode
+ * @fd: file descriptor of ch36x device
+ * @mode: bit0 on SPI Freq, 0->31.3MHz, 1->15.6MHz
+ * 		  bit1 on SPI I/O Pinout, 0->SPI3(SCS/SCL/SDX), 1->SPI4(SCS/SCL/SDX/SDI)
+ *
+ * The function return 0 if success, others if fail.
+ */
+extern int ch36x_set_stream(int fd, unsigned long mode);
+
+/**
+ * ch36x_stream_spi - spi transfer
+ * @fd: file descriptor of ch36x device
+ * @ibuffer: spi buffer to write
+ * @len: length to xfer
+ * @obuffer: pointer to read buffer
+ *
+ * The function return 0 if success, others if fail.
+ */
+extern int ch36x_stream_spi(int fd, uint8_t * ibuffer, unsigned long ilen,
+			    uint8_t * obuffer, unsigned long olen);
+
+#endif
+>>>>>>> develop

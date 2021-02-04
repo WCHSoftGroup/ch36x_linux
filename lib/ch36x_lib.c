@@ -8,11 +8,19 @@
  *
  * Cross-compile with cross-gcc -I /path/to/cross-kernel/include
  *
+<<<<<<< HEAD
  * Version: V1.1
+=======
+ * Version: V1.11
+>>>>>>> develop
  * 
  * Update Log:
  * V1.0 - initial version
  * V1.1 - modified APIs related to interrupt
+<<<<<<< HEAD
+=======
+ * V1.11 - added APIs related to SPI transfer
+>>>>>>> develop
  *
  */
  
@@ -353,7 +361,11 @@ int ch36x_write_io_dword(int fd, unsigned long ioaddr, uint32_t idword)
 {
 	struct {
 		unsigned long ioaddr;
+<<<<<<< HEAD
 		uint8_t idword;
+=======
+		uint32_t idword;
+>>>>>>> develop
 	} ch36x_write_io_t;
 	
 	ch36x_write_io_t.ioaddr = ioaddr;
@@ -577,3 +589,51 @@ void ch36x_set_int_routine(int fd, void *isr_handler)
 		signal(SIGIO, isr_handler); 
 	}
 }
+<<<<<<< HEAD
+=======
+
+/**
+ * ch36x_set_stream - set spi mode
+ * @fd: file descriptor of ch36x device
+ * @mode: bit0 on SPI Freq, 0->31.3MHz, 1->15.6MHz
+ * 		  bit1 on SPI I/O Pinout, 0->SPI3(SCS/SCL/SDX), 1->SPI4(SCS/SCL/SDX/SDI)
+ *
+ * The function return 0 if success, others if fail.
+ */
+int ch36x_set_stream(int fd, unsigned long mode)
+{
+	return ioctl(fd, CH36x_SET_STREAM, (unsigned long)&mode);
+}
+
+/**
+ * ch36x_stream_spi - spi transfer
+ * @fd: file descriptor of ch36x device
+ * @ibuffer: spi buffer to write
+ * @len: length to xfer
+ * @obuffer: pointer to read buffer
+ *
+ * The function return 0 if success, others if fail.
+ */
+int ch36x_stream_spi(int fd, uint8_t *ibuffer, unsigned long ilen, uint8_t *obuffer, unsigned long olen)
+{
+	struct {
+		uint8_t *ibuffer;
+		unsigned long ilen;
+		uint8_t *obuffer;
+		unsigned long olen;
+	} ch36x_stream_spi_t;
+	
+	if ((ilen < 0) || (ilen > mMAX_BUFFER_LENGTH)) {
+		return -1;
+	}
+	if ((olen < 0) || (olen > mMAX_BUFFER_LENGTH)) {
+		return -1;
+	}
+	ch36x_stream_spi_t.ibuffer = ibuffer;
+	ch36x_stream_spi_t.ilen = ilen;
+	ch36x_stream_spi_t.obuffer = obuffer;
+	ch36x_stream_spi_t.olen = olen;
+
+	return ioctl(fd, CH36x_STREAM_SPI, (unsigned long)&ch36x_stream_spi_t);
+}
+>>>>>>> develop

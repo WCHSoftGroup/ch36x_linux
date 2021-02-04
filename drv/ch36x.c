@@ -11,6 +11,10 @@
  * V1.1 - modified io read/write methods with standard api
  *		   not pointer access.
  * V1.2 - modified io/mem mapping, fixed usage of interruption.
+<<<<<<< HEAD
+=======
+ * V1.21 - added ioctl methods for spi transfer
+>>>>>>> develop
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +62,11 @@
                       
 #define DRIVER_AUTHOR 			"TECH39 <zhangj@wch.cn>"
 #define DRIVER_DESC 			"PCI/PCIE driver for chip ch365/ch367/ch368, etc."
+<<<<<<< HEAD
 #define VERSION_DESC  			"V1.2 On 2021.01.27"
+=======
+#define VERSION_DESC  			"V1.21 On 2021.02.04"
+>>>>>>> develop
 
 #define CH36X_MAX_NUM			16
 #define CH36X_DRV_NAME			"ch36xpci"
@@ -76,7 +84,10 @@
 #define CH368_SUB_VID			0x1C00	//Subsystem Vendor id
 #define CH368_SUB_DID			0x5834	//Subsystem Device id
 
+<<<<<<< HEAD
 //size of read or write 
+=======
+>>>>>>> develop
 #define SIZE_BYTE					0x01
 #define SIZE_WORD					0x02
 #define SIZE_DWORD					0x03
@@ -86,11 +97,14 @@
 #define TRIGGER_RISING				0xe8
 #define TRIGGER_FALLING				0xec
 
+<<<<<<< HEAD
 //address of cfg/IO/MEM register
 #define OFFSET_IO_BASE_ADDR			0x10	// I/O Base Address
 #define OFFSET_MEM_BASE_ADDR		0x14	// Memory Base Address	
 #define OFFSET_INT_LINE				0x3C	// Interrupt Line & Pin
 
+=======
+>>>>>>> develop
 /* IOCTRL register bits */
 #define CH365_IOCTRL_A15_BIT		BIT(0) /* Set A15 */
 #define CH365_IOCTRL_SYS_EX_BIT		BIT(1) /* Set SYS_EX */
@@ -110,7 +124,25 @@
 #define CH367_INTCR_INT_TYPE_BIT	BIT(3) /* Set INT Type */
 #define CH367_INTCR_INT_RETRY_BIT	BIT(4) /* Set INT Retry */
 
+<<<<<<< HEAD
 #define CH365_STATUS_REG 0x42
+=======
+/* GPOR register bits */
+#define CH367_GPOR_SET_SDA_BIT		BIT(0) /* Set SDA Value */
+#define CH367_GPOR_SET_SCL_BIT		BIT(1) /* Set SCL Value */
+#define CH367_GPOR_SET_SCS_BIT		BIT(2) /* Set SCS Value */
+#define CH367_GPOR_ENABLE_WAKE_BIT	BIT(5) /* Force Wakeup Support */
+#define CH367_GPOR_SET_SDX_DIR_BIT	BIT(6) /* Set SDX Direction */
+#define CH367_GPOR_SET_SDX_BIT		BIT(7) /* Set SDX Value */
+
+/* SPICR register bits */
+#define CH367_SPICR_SPI_STATUS_BIT	BIT(4) /* SPI Transfer Ongoing Status */
+#define CH367_SPICR_SPI_FREQ_BIT	BIT(5) /* Set SPI Freq: 1->15.6MHz 0->31.3MHz */
+#define CH367_SPICR_SPI_SLT_SDI_BIT	BIT(6) /* Set SPI Data In Pin: 1->SDI 0->SDX */
+#define CH367_SPICR_SPI_NEWTRAN_BIT	BIT(7) /* Begin New Transfer After Read SPIDR */
+
+#define CH365_STATUS_REG 			0x42
+>>>>>>> develop
 #define CH365_STATUS_ENABLE_BIT		BIT(7) /* Global INT Enable */
 
 enum CHIP_TYPE {
@@ -127,6 +159,7 @@ enum INTMODE {
 	INT_FALLING
 };
 
+<<<<<<< HEAD
 typedef	struct	_CH365_IO_REG {				// CH365芯片的I/O空间
 	u8			mCh365IoPort[0xf0];			// 00H-EFH,共240字节为标准的I/O端口
 	union	{								// 以字或者以字节为单位进行存取
@@ -152,6 +185,33 @@ typedef	struct	_CH365_IO_REG {				// CH365芯片的I/O空间
 
 typedef	struct	_CH365_MEM_REG {			// CH365芯片的存储器空间
 	u8			mCh365MemPort[0x8000];		// 0000H-7FFFH,共32768字节为标准的存储器单元
+=======
+typedef	struct	_CH365_IO_REG {				//CH365芯片的I/O空间
+	u8 mCh365IoPort[0xf0];					//00H-EFH,共240字节为标准的I/O端口
+	union {									//以字或者以字节为单位进行存取
+		u16	mCh365MemAddr;					//F0H 存储器接口: A15-A0地址设定寄存器
+		struct {							//以字节为单位进行存取
+			u8 mCh365MemAddrL;				//F0H 存储器接口: A7-A0地址设定寄存器
+			u8 mCh365MemAddrH;				//F1H 存储器接口: A15-A8地址设定寄存器
+		};
+	};
+	u8 mCh365IoResv2;						//F2H
+	u8 mCh365MemData;						//F3H 存储器接口: 存储器数据存取寄存器
+	u8 mCh365I2cData;						//F4H I2C串行接口: I2C数据存取寄存器
+	u8 mCh365I2cCtrl;						//F5H I2C串行接口: I2C控制和状态寄存器
+	u8 mCh365I2cAddr;						//F6H I2C串行接口: I2C地址设定寄存器
+	u8 mCh365I2cDev;						//F7H I2C串行接口: I2C设备地址和命令寄存器
+	u8 mCh365IoCtrl;						//F8H 芯片控制寄存器,高5位只读
+	u8 mCh365IoBuf;							//F9H 本地数据输入缓存寄存器
+	u8 mCh365Speed;							//FAH 芯片速度控制寄存器
+	u8 mCh365IoResv3;						//FBH
+	u8 mCh365IoTime;						//FCH 硬件循环计数寄存器
+	u8 mCh365IoResv4[3];					//FDH
+} mCH365_IO_REG, *mPCH365_IO_REG;
+
+typedef	struct	_CH365_MEM_REG {			//CH365芯片的存储器空间
+	u8 mCh365MemPort[0x8000];				//0000H-7FFFH,共32768字节为标准的存储器单元
+>>>>>>> develop
 } mCH365_MEM_REG, *mPCH365_MEM_REG;
 
 
@@ -191,10 +251,19 @@ typedef	struct	_CH367_IO_REG {	            //CH367芯片的I/O空间寄存器
 	u8 mCH367IO_RESV4;                      //FFH
 } mCH367_IO_REG, *mPCH367_IO_REG;
 
+<<<<<<< HEAD
 typedef	struct	_CH368_MEM_REG {			// CH367芯片的存储器空间
 	u8			mCH368MemPort[0x8000];		// 0000H-7FFFH,共32768字节为标准的存储器单元
 } mCH368_MEM_REG, *mPCH368_MEM_REG;
 
+=======
+typedef	struct _CH368_MEM_REG {				//CH367芯片的存储器空间
+	u8 mCH368MemPort[0x8000];				//0000H-7FFFH,共32768字节为标准的存储器单元
+} mCH368_MEM_REG, *mPCH368_MEM_REG;
+
+#define	mMAX_BUFFER_LENGTH	max(sizeof(mCH367_IO_REG), sizeof(mCH368_MEM_REG))
+
+>>>>>>> develop
 #define IOCTL_MAGIC 					'P'
 #define CH36x_GET_IO_BASE_ADDR			_IOR(IOCTL_MAGIC, 0x80, u16)
 #define CH36x_GET_MEM_BASE_ADDR			_IOR(IOCTL_MAGIC, 0x81, u16)
@@ -228,7 +297,14 @@ typedef	struct	_CH368_MEM_REG {			// CH367芯片的存储器空间
 /* other codes */
 #define CH36x_GET_CHIPTYPE				_IOR(IOCTL_MAGIC, 0x98, u16)
 #define CH36x_GET_VERSION				_IOR(IOCTL_MAGIC, 0x99, u16)
+<<<<<<< HEAD
 
+=======
+#define CH36x_SET_STREAM				_IOW(IOCTL_MAGIC, 0x9a, u16)
+#define CH36x_STREAM_SPI				_IOWR(IOCTL_MAGIC, 0x9b, u16)
+
+/* global varibles */
+>>>>>>> develop
 static unsigned char g_dev_count = 0;
 static struct class *ch36x_class = NULL;
 static struct list_head g_private_head;
@@ -249,6 +325,10 @@ struct ch36x_dev {
 	struct mutex io_mutex;
 	enum INTMODE intmode;
 	struct fasync_struct *fasync;
+<<<<<<< HEAD
+=======
+	unsigned long spimode;
+>>>>>>> develop
 };
 
 static int ch36x_cfg_read(int type, unsigned char offset, unsigned long ch36x_arg,
@@ -448,6 +528,107 @@ static int ch36x_mem_write_block(unsigned long addr, unsigned long buf,
 	return retval;
 }
 
+<<<<<<< HEAD
+=======
+static void ch36x_start_spi_data_in(struct ch36x_dev *ch36x_dev, uint8_t regGPOR)
+{
+	if (ch36x_dev->spimode & BIT(1))
+		outb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR), regGPOR & 0x39);
+//	inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPIData));
+}
+
+static int ch36x_start_spi(struct ch36x_dev *ch36x_dev, uint8_t *regGPOR)
+{
+	u8  regval;
+
+	regval = inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+	if (ch36x_dev->spimode & BIT(0)) {
+		if (ch36x_dev->spimode & BIT(1))
+			outb(CH367_SPICR_SPI_NEWTRAN_BIT | CH367_SPICR_SPI_FREQ_BIT | CH367_SPICR_SPI_SLT_SDI_BIT,
+				ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+		else
+			outb(CH367_SPICR_SPI_NEWTRAN_BIT | CH367_SPICR_SPI_FREQ_BIT,
+				ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+	}
+	else {
+		if (ch36x_dev->spimode & BIT(1))
+			outb(CH367_SPICR_SPI_NEWTRAN_BIT | CH367_SPICR_SPI_SLT_SDI_BIT,
+				ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+		else
+			outb(CH367_SPICR_SPI_NEWTRAN_BIT,
+				ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+	}
+
+	*regGPOR = inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR));
+	if (!(*regGPOR & CH367_GPOR_SET_SCS_BIT))
+		outb(*regGPOR | CH367_GPOR_SET_SCS_BIT,
+			ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR));
+	outb((*regGPOR & 0x39) | CH367_GPOR_SET_SDX_DIR_BIT,
+		ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR));
+	regval = inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR));
+	if (regval & CH367_GPOR_SET_SCS_BIT)
+		return -1;
+	
+	return 0;
+}
+
+static int ch36x_stop_spi(struct ch36x_dev *ch36x_dev, uint8_t regGPOR)
+{
+	uint8_t  regval;
+
+	regval = inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+	outb(regval & CH367_SPICR_SPI_FREQ_BIT,
+		ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPICtrl));
+	outb((regGPOR & 0x39) | CH367_GPOR_SET_SDX_BIT | CH367_GPOR_SET_SCS_BIT,
+		ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR));
+	regval = inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367GPOR));
+	if (!(regval & CH367_GPOR_SET_SCS_BIT))
+		return -1;
+
+	return 0;
+}
+
+static int ch36x_stream_spi(struct ch36x_dev *ch36x_dev, unsigned long ibuf, unsigned long ilen,
+				unsigned long obuf, unsigned long olen)
+{
+	int retval = -1;
+	char *buf = NULL;
+	u8 regGPOR;
+	int i;
+
+	buf = kmalloc(max(ilen, olen), GFP_KERNEL);
+	if (!buf) {
+		retval = -ENOMEM;
+		goto error_mem;
+	}
+	retval = copy_from_user((char *)buf, (char __user *)ibuf, ilen);
+	if (retval)
+		goto error;
+
+	if (ch36x_start_spi(ch36x_dev, &regGPOR))
+		goto error;
+	for (i = 0; i < ilen; i++)
+		outb(*(buf + i), ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPIData));
+
+	if (olen) {
+		ch36x_start_spi_data_in(ch36x_dev, regGPOR);
+		for (i = 0; i < olen; i++)
+			*(buf + i) = inb(ch36x_dev->ioaddr + offsetof(mCH367_IO_REG, mCH367SPIData));
+	}
+	ch36x_stop_spi(ch36x_dev, regGPOR);
+	
+	retval = copy_to_user((char __user *)obuf, buf, olen);
+	if (retval)
+		goto error;
+	
+error:
+	kfree(buf);	
+error_mem:
+	
+	return retval;
+}
+
+>>>>>>> develop
 static irqreturn_t ch36x_isr(int irq, void *dev_id)
 {
 	unsigned char intval;
@@ -604,6 +785,10 @@ static int ch36x_fops_ioctl_do(struct ch36x_dev *ch36x_dev, unsigned int cmd,
 	unsigned long arg1;
 	unsigned long arg2;
 	unsigned long arg3;
+<<<<<<< HEAD
+=======
+	unsigned long arg4;
+>>>>>>> develop
 
 	switch (cmd) {
 	case CH36x_GET_CHIPTYPE:
@@ -737,6 +922,20 @@ static int ch36x_fops_ioctl_do(struct ch36x_dev *ch36x_dev, unsigned int cmd,
 		get_user(arg3, ((long __user *)ch36x_arg + 2));
 		retval = ch36x_mem_write_block(arg1, arg2, arg3);
 		break;
+<<<<<<< HEAD
+=======
+	case CH36x_SET_STREAM:
+		get_user(arg1, (long __user *)ch36x_arg);
+		ch36x_dev->spimode = arg1;
+		break;
+	case CH36x_STREAM_SPI:
+		get_user(arg1, (long __user *)ch36x_arg);
+		get_user(arg2, ((long __user *)ch36x_arg + 1));
+		get_user(arg3, ((long __user *)ch36x_arg + 2));
+		get_user(arg4, ((long __user *)ch36x_arg + 3));
+		retval = ch36x_stream_spi(ch36x_dev, arg1, arg2, arg3, arg4);
+		break;
+>>>>>>> develop
 	default:
 		return -EINVAL;
 	}
@@ -918,8 +1117,15 @@ static int ch36x_pci_probe(struct pci_dev *pdev,
 	sprintf(ch36x_dev->dev_file_name, "%s%c", CH36X_DRV_NAME, '0' + g_dev_count);
 	retval = request_irq(ch36x_dev->irq, ch36x_isr, IRQF_SHARED,
 				ch36x_dev->dev_file_name, (void *)ch36x_dev);
+<<<<<<< HEAD
 	if (retval)
 		goto unmap;
+=======
+	if (retval) {
+		dev_err(&pdev->dev, "Could not request irq.\n");
+		goto unmap;
+	}
+>>>>>>> develop
 
 	ch36x_dump_regs(ch36x_dev);
 

@@ -8,11 +8,19 @@
  *
  * Cross-compile with cross-gcc -I /path/to/cross-kernel/include
  *
+<<<<<<< HEAD
  * Version: V1.1
+=======
+ * Version: V1.11
+>>>>>>> develop
  * 
  * Update Log:
  * V1.0 - initial version
  * V1.1 - called new APIs within ch36x_lib
+<<<<<<< HEAD
+=======
+ * V1.11 - called SPI APIs within ch36x_lib
+>>>>>>> develop
  *
  */
  
@@ -22,7 +30,11 @@
 #include <errno.h>   
 #include <string.h>
 #include <sys/types.h> 
+<<<<<<< HEAD
 #include "ch36x_lib.h"
+=======
+#include "../lib/ch36x_lib.h"
+>>>>>>> develop
 
 static const char *device = "/dev/ch36xpci0";
 
@@ -184,6 +196,45 @@ static void ch36x_demo_isr_disable(int fd)
 	ch36x_set_int_routine(fd, NULL);
 }
 
+<<<<<<< HEAD
+=======
+static void ch36x_demo_spi_operate(int fd)
+{
+	/* bit0 of mode on SPI Freq, 0->31.3MHz, 1->15.6MHz */
+	/* bit1 of mode on SPI I/O Pinout, 0->SPI3(SCS/SCL/SDX), 1->SPI4(SCS/SCL/SDX/SDI) */
+	int mode = 0x03;
+	int ret;
+	int ilen, olen;
+	uint8_t ibuffer[1024];
+	uint8_t obuffer[1024];
+	int i;
+
+	printf("\n---------- SPI read write test ----------\n");
+	ret = ch36x_set_stream(fd, mode);
+	if (ret) {
+		printf("set stream error.\n");
+		return;
+	}
+	printf("input write length:\n");
+	scanf("%d", &ilen);
+	getchar();
+	printf("input read length:\n");
+	scanf("%d", &olen);
+	getchar();
+	memset(ibuffer, 0x55, sizeof(ibuffer));
+	ret = ch36x_stream_spi(fd, ibuffer, ilen, obuffer, olen);
+	if (ret != 0) {
+		printf("spi transfer fail.\n");
+		return;
+	}
+	printf("\n---------- read buffer ----------\n");
+	for (i = 0; i < olen; i++) {
+		printf("\tobuffer[%d]: 0x%2x\n", i, obuffer[i]);
+	}
+	printf("\n");
+}
+
+>>>>>>> develop
 int main(int argc, char *argv[])
 {
 	int fd;
@@ -235,7 +286,11 @@ int main(int argc, char *argv[])
 	while (1) {
 		printf("press c to operate config space, m to operate memory space, "
 				"i to operate io space, e to enable interrupt, "
+<<<<<<< HEAD
 				"d to disable interrpt, q for quit.\n");
+=======
+				"d to disable interrpt, s to operate spi, q for quit.\n");
+>>>>>>> develop
 		scanf("%c", &c);
 		getchar();
 		if (c == 'q')
@@ -259,6 +314,12 @@ int main(int argc, char *argv[])
 		case 'd':
 			ch36x_demo_isr_disable(fd);
 			break;
+<<<<<<< HEAD
+=======
+		case 's':
+			ch36x_demo_spi_operate(fd);
+			break;
+>>>>>>> develop
 		default:
 			break;
 		}
@@ -273,5 +334,8 @@ int main(int argc, char *argv[])
 exit:
 	return ret;
 }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> develop
