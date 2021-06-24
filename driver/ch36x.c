@@ -1,8 +1,13 @@
 /*
- * ch365/ch367/ch368 PCI/PCIE driver - Copyright (C) 2021 WCH Corporation.
+ * ch365/ch367/ch368 PCI/PCIE driver
+ *
+ * Copyright (C) 2021 WCH.
  * Author: TECH39 <zhangj@wch.cn>
  *
- * Sponsored by SuSE
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
  * System required:
  * Kernel version beyond 2.6.x
@@ -12,20 +17,6 @@
  *		   not pointer access.
  * V1.2 - modified io/mem mapping, fixed usage of interruption.
  * V1.21 - added ioctl methods for spi transfer
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 #define DEBUG
@@ -88,12 +79,11 @@
 
 /* IOCTRL register bits */
 #define CH365_IOCTRL_A15_BIT		BIT(0) /* Set A15 */
-#define CH365_IOCTRL_SYS_EX_BIT		BIT(1) /* Set SYS_EX */
+#define CH365_IOCTRL_SYS_EX_BIT	BIT(1) /* Set SYS_EX */
 #define CH365_IOCTRL_INTA_BIT		BIT(2) /* INT Active status */
 
-
 /* MICSR register bits */
-#define CH367_MICSR_GPO_BIT			BIT(0) /* Set GPO */
+#define CH367_MICSR_GPO_BIT		BIT(0) /* Set GPO */
 #define CH367_MICSR_INTA_BIT		BIT(2) /* INT Active status */
 #define CH367_MICSR_INTS_BIT		BIT(3) /* INT status */
 #define CH367_MICSR_RSTO_BIT		BIT(7) /* Set RSTO */
@@ -136,72 +126,72 @@ enum INTMODE {
 	INT_FALLING
 };
 
-typedef	struct	_CH365_IO_REG {				//CH365芯片的I/O空间
-	u8 mCh365IoPort[0xf0];					//00H-EFH,共240字节为标准的I/O端口
-	union {									//以字或者以字节为单位进行存取
-		u16	mCh365MemAddr;					//F0H 存储器接口: A15-A0地址设定寄存器
-		struct {							//以字节为单位进行存取
-			u8 mCh365MemAddrL;				//F0H 存储器接口: A7-A0地址设定寄存器
-			u8 mCh365MemAddrH;				//F1H 存储器接口: A15-A8地址设定寄存器
+typedef	struct	_CH365_IO_REG {				//CH365 IO space
+	u8 mCh365IoPort[0xf0];					//00H-EFH, 240 bytes standard IO bytes
+	union {									
+		u16	mCh365MemAddr;					//F0H Memory Interface: A15-A0 address setting register
+		struct {							
+			u8 mCh365MemAddrL;				//F0H Memory Interface: A7-A0 address setting register
+			u8 mCh365MemAddrH;				//F1H Memory Interface: A15-A8 address setting register
 		};
 	};
 	u8 mCh365IoResv2;						//F2H
-	u8 mCh365MemData;						//F3H 存储器接口: 存储器数据存取寄存器
-	u8 mCh365I2cData;						//F4H I2C串行接口: I2C数据存取寄存器
-	u8 mCh365I2cCtrl;						//F5H I2C串行接口: I2C控制和状态寄存器
-	u8 mCh365I2cAddr;						//F6H I2C串行接口: I2C地址设定寄存器
-	u8 mCh365I2cDev;						//F7H I2C串行接口: I2C设备地址和命令寄存器
-	u8 mCh365IoCtrl;						//F8H 芯片控制寄存器,高5位只读
-	u8 mCh365IoBuf;							//F9H 本地数据输入缓存寄存器
-	u8 mCh365Speed;							//FAH 芯片速度控制寄存器
+	u8 mCh365MemData;						//F3H Memory Interface: Memory data access register
+	u8 mCh365I2cData;						//F4H I2C Interface: I2C data access register
+	u8 mCh365I2cCtrl;						//F5H I2C Interface: I2C control and status register
+	u8 mCh365I2cAddr;						//F6H I2C Interface: I2C address setting register
+	u8 mCh365I2cDev;						//F7H I2C Interface: I2C device address and command register
+	u8 mCh365IoCtrl;						//F8H Control register, high 5 bits are read-only
+	u8 mCh365IoBuf;							//F9H Local data input buffer register
+	u8 mCh365Speed;							//FAH Speed control register
 	u8 mCh365IoResv3;						//FBH
-	u8 mCh365IoTime;						//FCH 硬件循环计数寄存器
+	u8 mCh365IoTime;						//FCH Hardware loop count register
 	u8 mCh365IoResv4[3];					//FDH
 } mCH365_IO_REG, *mPCH365_IO_REG;
 
-typedef	struct	_CH365_MEM_REG {			//CH365芯片的存储器空间
-	u8 mCh365MemPort[0x8000];				//0000H-7FFFH,共32768字节为标准的存储器单元
+typedef	struct	_CH365_MEM_REG {			//CH365 Memory space
+	u8 mCh365MemPort[0x8000];				//0000H-7FFFH, 32768 bytes in total
 } mCH365_MEM_REG, *mPCH365_MEM_REG;
 
 
-typedef	struct	_CH367_IO_REG {	            //CH367芯片的I/O空间寄存器
-	u8 mCH367IoPort[0xE8];                  //00H-E7H,共232字节为标准的I/O端口
-	u8 mCH367GPOR;	                        //E8H 通用输出寄存器
-	u8 mCH367GPVR;	                        //E9H 通用变量寄存器
-	u8 mCH367GPIR;	                        //EAH 通用输入寄存器
-	u8 mCH367IntCtr;	                    //EBH 中断控制寄存器
+typedef	struct	_CH367_IO_REG {	            //CH367 IO space
+	u8 mCH367IoPort[0xE8];                  //00H-E7H, 232 bytes standard IO bytes
+	u8 mCH367GPOR;	                        //E8H General output register
+	u8 mCH367GPVR;	                        //E9H General variable register
+	u8 mCH367GPIR;	                        //EAH General input register
+	u8 mCH367IntCtr;	                    //EBH Interrupt control register
 	union {
-		u8 mCH367IoBuf8;                    //ECH 8位被动并行接口数据缓冲区
-		u32 mCH367IoBuf32;					//ECH 32位被动并行接口数据缓冲区
+		u8 mCH367IoBuf8;                    //ECH 8-bit passive parallel interface data buffer
+		u32 mCH367IoBuf32;					//ECH 32-bit passive parallel interface data buffer
 	};
 	union {
-		u16 mCH368MemAddr;                  //F0H 存储器接口: A15-A0地址设定寄存器
+		u16 mCH368MemAddr;                  //F0H Memory Interface: A15-A0 address setting register
 		struct {
-			u8 mCH368MemAddrL;              //F0H 存储器接口: A7-A0地址设定寄存器
+			u8 mCH368MemAddrL;              //F0H Memory Interface: A7-A0 address setting register
 			union {
-				u8 mCH368MemAddrH;          //F1H 存储器接口: A15-A8地址设定寄存器
-				u8 mCH367GPOR2;             //F1H 通用输出寄存器2
+				u8 mCH368MemAddrH;          //F1H Memory Interface: A15-A8 address setting register
+				u8 mCH367GPOR2;             //F1H General output register 2
 			};
 		} ASR;
 	};
 	u8 mCH367IORESV2;                       //F2H
-	u8 mCH368MemData;                       //F3H 存储器接口: 存储器数据存取寄存器
+	u8 mCH368MemData;                       //F3H Memory Interface: Memory data access register
 	union {
-		u8 mCH367Data8Sta;					//F4H D7-D0端口状态寄存器
-		u32 mCH367SData32Sta;               //F4H D31-D0端口状态寄存器
+		u8 mCH367Data8Sta;					//F4H D7-D0 port status register
+		u32 mCH367SData32Sta;               //F4H D31-D0 port status register
 	};
-	u8 mCH367Status;                        //F8H 杂项控制和状态寄存器
+	u8 mCH367Status;                        //F8H Miscellaneous control and status register
 	u8 mCH367IO_RESV3;                      //F9H
-	u8 mCH367Speed;                         //FAH 读写速度控制寄存器
-	u8 mCH367PDataCtrl;                     //FBH 被动并行接口控制寄存器
-	u8 mCH367IoTime;                        //FCH 硬件循环计数寄存器
-	u8 mCH367SPICtrl;                       //FDH SPI控制寄存器
-	u8 mCH367SPIData;                       //FEH SPI数据寄存器
+	u8 mCH367Speed;                         //FAH Speed control register
+	u8 mCH367PDataCtrl;                     //FBH Passive parallel interface control register
+	u8 mCH367IoTime;                        //FCH Hardware loop count register
+	u8 mCH367SPICtrl;                       //FDH SPI control register
+	u8 mCH367SPIData;                       //FEH SPI data register
 	u8 mCH367IO_RESV4;                      //FFH
 } mCH367_IO_REG, *mPCH367_IO_REG;
 
-typedef	struct _CH368_MEM_REG {				//CH367芯片的存储器空间
-	u8 mCH368MemPort[0x8000];				//0000H-7FFFH,共32768字节为标准的存储器单元
+typedef	struct _CH368_MEM_REG {				//CH367 Memory space
+	u8 mCH368MemPort[0x8000];				//0000H-7FFFH, 32768 bytes in total
 } mCH368_MEM_REG, *mPCH368_MEM_REG;
 
 #define	mMAX_BUFFER_LENGTH	max(sizeof(mCH367_IO_REG), sizeof(mCH368_MEM_REG))

@@ -1,5 +1,7 @@
-/* 
- * ch365/ch367/ch368 PCI/PCIE library - Copyright (C) 2021 WCH Corporation.
+/*
+ * ch365/ch367/ch368 PCI/PCIE application library
+ *
+ * Copyright (C) 2021 WCH.
  * Author: TECH39 <zhangj@wch.cn>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,7 +16,6 @@
  * V1.0 - initial version
  * V1.1 - modified APIs related to interrupt
  * V1.11 - added APIs related to SPI transfer
- *
  */
  
 #include <stdio.h>

@@ -1,5 +1,7 @@
 /* 
- * ch365/ch367/ch368 PCI/PCIE demo - Copyright (C) 2021 WCH Corporation.
+ * ch365/ch367/ch368 PCI/PCIE application example
+ *
+ * Copyright (C) 2021 WCH.
  * Author: TECH39 <zhangj@wch.cn>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,7 +16,6 @@
  * V1.0 - initial version
  * V1.1 - called new APIs within ch36x_lib
  * V1.11 - called SPI APIs within ch36x_lib
- *
  */
  
 #include <stdio.h>
